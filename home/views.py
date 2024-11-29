@@ -13,5 +13,5 @@ def categoria(request):
 
 def lista_produtos(request):
     # Exibe a lista de produtos
-    lista = Categoria.objects.all()  # Corrigido 'objcts' para 'objects'
+    lista = Categoria.objects.all()  
     return render(request, 'categoria/lista.html', {'lista': lista})
