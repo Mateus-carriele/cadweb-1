@@ -5,6 +5,7 @@
 {% block conteudo %}
 <div class="container mt-4">
     <h1>Lista de Categorias</h1>
+    <a href="{% url 'form_categoria' %}" class="btn btn-success mb-3">Adicionar Categoria</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -27,6 +28,14 @@
                         onclick="location.href='{% url 'form_categoria' categoria.id %}'">
                         Editar Categoria
                     </button>
+                    
+                     <!-- Botão para excluir -->
+                    <form action="{% url 'excluir_categoria' categoria.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta categoria?');">
+                            Excluir
+                        </button>
+                    </form>
 
                 </td>
             </tr>

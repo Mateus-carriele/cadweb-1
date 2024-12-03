@@ -19,18 +19,23 @@ def lista_produtos(request):
 
 
 
-def form_categoria(request, id):
-    # Tenta encontrar o produto no banco de dados, se não encontrado, retorna 404
-    produto = get_object_or_404(Produto, id=id)
+def form_categoria(request, id=None):
+    if id:  # Se o ID for fornecido, tenta buscar o registro
+        categoria = get_object_or_404(Categoria, id=id)
+    else:  # Se não, cria uma nova instância
+        categoria = None
 
     if request.method == 'POST':
-        # Preenche o formulário com os dados do POST
-        form = ProdutoForm(request.POST, instance=produto)
+        form = CategoriaForm(request.POST, instance=categoria)
         if form.is_valid():
-            form.save()  # Atualiza o produto no banco de dados
-            return redirect('produtos')  # Redireciona para a listagem de produtos
+            form.save()  # Salva no banco de dados
+            return redirect('categoria')  # Redireciona para a listagem
     else:
-        # Preenche o formulário com os dados do produto para edição
-        form = ProdutoForm(instance=produto)
+        form = CategoriaForm(instance=categoria)  # Formulário com a instância existente ou vazio
 
-    return render(request, 'produto/editar.html', {'form': form})
+    return render(request, 'categoria/formulario.html', {'form': form})
+
+def excluir_categoria(request, id):
+    categoria = get_object_or_404(Categoria, id=id)
+    categoria.delete()
+    return redirect('categoria')  # Redireciona para a listagem de categorias
