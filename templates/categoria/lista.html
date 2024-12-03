@@ -10,7 +10,8 @@
             <tr>
                 <th>ID</th>
                 <th>Nome</th>
-                <th>ordem</th>
+                <th>Ordem</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +20,15 @@
                 <td>{{ categoria.id }}</td>
                 <td>{{ categoria.nome }}</td>
                 <td>{{ categoria.ordem }}</td>
+                <td>
+                    <!-- Botão para editar categoria -->
+                    <button 
+                        class="btn btn-warning btn-sm" 
+                        onclick="location.href='{% url 'form_categoria' categoria.id %}'">
+                        Editar Categoria
+                    </button>
+
+                </td>
             </tr>
             {% endfor %}
         </tbody>

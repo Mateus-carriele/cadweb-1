@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block titulo_conteudo %} formulario {% endblock titulo_conteudo %}
+     
+{% block conteudo %} 
+
+
+{% extends "base.html" %}
+
+{% block titulo %}Cadastro de Categoria{% endblock %}
+
+{% block conteudo %}
+    <div class="container mt-4">
+        <h1>Cadastro de Categoria</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }} <!-- Renderiza os campos do formulário -->
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'categoria' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+{% endblock %}
+
+
+
+
+{% endblock conteudo %}
+      
+ 
