@@ -39,3 +39,7 @@ def excluir_categoria(request, id):
     categoria = get_object_or_404(Categoria, id=id)
     categoria.delete()
     return redirect('categoria')  # Redireciona para a listagem de categorias
+
+def detalhes_categoria(request, id):
+    categoria = get_object_or_404(Categoria, id=id)
+    return render(request, 'categoria/detalhes.html', {'categoria': categoria})
