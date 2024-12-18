@@ -53,5 +53,8 @@ def excluir_categoria(request, id):
     return redirect('categoria')  # Redireciona para a listagem de categorias
 
 def detalhes_categoria(request, id):
-    categoria = get_object_or_404(Categoria, id=id)
+    try:
+        categoria = Categoria.objects.get(id=id)
+    except Categoria.DoesNotExist:
+        messages.error(request, 'A categoria que você tentou excluir não foi encontrada.')
     return render(request, 'categoria/detalhes.html', {'categoria': categoria})
