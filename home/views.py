@@ -56,5 +56,7 @@ def detalhes_categoria(request, id):
     try:
         categoria = Categoria.objects.get(id=id)
     except Categoria.DoesNotExist:
-        messages.error(request, 'A categoria que você tentou excluir não foi encontrada.')
+        messages.error(request, 'A categoria que você tentou visualizar não foi encontrada.')
+        return redirect('categoria')  # Redireciona para a lista de categorias
+    
     return render(request, 'categoria/detalhes.html', {'categoria': categoria})
