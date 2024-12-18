@@ -56,7 +56,8 @@ def detalhes_categoria(request, id):
     try:
         categoria = Categoria.objects.get(id=id)
     except Categoria.DoesNotExist:
-        messages.error(request, 'A categoria que você tentou visualizar não foi encontrada.')
+        # Caso o registro não seja encontrado, exibe uma mensagem de erro
+        messages.error(request, 'Registro não encontrado.')
         return redirect('categoria')  # Redireciona para a listagem de categorias
-    # Se a categoria for encontrada, renderiza o template
+    
     return render(request, 'categoria/detalhes.html', {'categoria': categoria})
