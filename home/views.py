@@ -20,24 +20,35 @@ def lista_produtos(request):
 
 
 def form_categoria(request, id=None):
-    if id:  # Se o ID for fornecido, tenta buscar o registro
-        categoria = get_object_or_404(Categoria, id=id)
-    else:  # Se não, cria uma nova instância
-        categoria = None
+    if id:  # Verifica se o ID foi passado para edição
+        try:
+            categoria = Categoria.objects.get(id=id)
+        except Categoria.DoesNotExist:
+            messages.error(request, 'A categoria que você tentou editar não foi encontrada.')
+            return redirect('categoria')  # Redireciona para a listagem de categorias
+    else:
+        categoria = None  # Novo registro
 
     if request.method == 'POST':
         form = CategoriaForm(request.POST, instance=categoria)
         if form.is_valid():
-            form.save()  # Salva no banco de dados
-            return redirect('categoria')  # Redireciona para a listagem
+            form.save()
+            messages.success(request, 'Categoria salva com sucesso.')
+            return redirect('categoria')
     else:
-        form = CategoriaForm(instance=categoria)  # Formulário com a instância existente ou vazio
+        form = CategoriaForm(instance=categoria)
 
     return render(request, 'categoria/formulario.html', {'form': form})
 
 def excluir_categoria(request, id):
-    categoria = get_object_or_404(Categoria, id=id)
-    categoria.delete()
+    try:
+        categoria = Categoria.objects.get(id=id)
+        categoria.delete()
+        messages.success(request, 'Categoria excluída com sucesso.')
+    except Categoria.DoesNotExist:
+        messages.error(request, 'A categoria que você tentou excluir não foi encontrada.')
+    except Exception as e:
+        messages.error(request, f'Ocorreu um erro ao tentar excluir a categoria: {e}')
     return redirect('categoria')  # Redireciona para a listagem de categorias
 
 def detalhes_categoria(request, id):
