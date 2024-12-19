@@ -1,34 +1,30 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import *
-from .forms import *
+from .models import *  # Agora, ambos os modelos estão sendo importados
+from .forms import *  # Certifique-se de ter os formulários para Categoria e Cliente
 from django.contrib import messages
 
 def index(request):
     return render(request, 'index.html')
 
+# Lista de categorias
 def categoria(request):
-    # Exibe a lista de categorias
     contexto = {
         'lista': Categoria.objects.all().order_by('id'),
     }
     return render(request, 'categoria/lista.html', contexto)
 
-def lista_produtos(request):
-    # Exibe a lista de produtos
-    lista = Categoria.objects.all()  
-    return render(request, 'categoria/lista.html', {'lista': lista})
+# Lista de clientes
+def lista_cliente(request):
+    contexto = {
+        'lista': Cliente.objects.all().order_by('id'),
+    }
+    return render(request, 'cliente/lista_cliente.html', contexto)
 
-
-
+# Formulário para criar ou editar categoria
 def form_categoria(request, id=None):
-    if id:  # Verifica se o ID foi passado para edição
-        try:
-            categoria = Categoria.objects.get(id=id)
-        except Categoria.DoesNotExist:
-            messages.error(request, 'A categoria que você tentou editar não foi encontrada.')
-            return redirect('categoria')  # Redireciona para a listagem de categorias
-    else:
-        categoria = None  # Novo registro
+    categoria = None
+    if id:
+        categoria = get_object_or_404(Categoria, id=id)
 
     if request.method == 'POST':
         form = CategoriaForm(request.POST, instance=categoria)
@@ -41,23 +37,49 @@ def form_categoria(request, id=None):
 
     return render(request, 'categoria/formulario.html', {'form': form})
 
+# Formulário para criar ou editar cliente
+def form_cliente(request, id=None):
+    cliente = None
+    if id:
+        cliente = get_object_or_404(Cliente, id=id)
+
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Cliente salvo com sucesso.')
+            return redirect('lista_cliente')
+    else:
+        form = ClienteForm(instance=cliente)
+
+    return render(request, 'cliente/formulario_cliente.html', {'form': form})
+
+# Excluir categoria
 def excluir_categoria(request, id):
     try:
-        categoria = Categoria.objects.get(id=id)
+        categoria = get_object_or_404(Categoria, id=id)
         categoria.delete()
         messages.success(request, 'Categoria excluída com sucesso.')
     except Categoria.DoesNotExist:
-        messages.error(request, 'A categoria que você tentou excluir não foi encontrada.')
-    except Exception as e:
-        messages.error(request, f'Ocorreu um erro ao tentar excluir a categoria: {e}')
-    return redirect('categoria')  # Redireciona para a listagem de categorias
+        messages.error(request, 'Categoria não encontrada.')
+    return redirect('categoria')
 
-def detalhes_categoria(request, id):
+# Excluir cliente
+def excluir_cliente(request, id):
     try:
-        categoria = Categoria.objects.get(id=id)
-    except Categoria.DoesNotExist:
-        # Caso o registro não seja encontrado, exibe uma mensagem de erro
-        messages.error(request, 'Registro não encontrado.')
-        return redirect('categoria')  # Redireciona para a listagem de categorias
-    
+        cliente = get_object_or_404(Cliente, id=id)
+        cliente.delete()
+        messages.success(request, 'Cliente excluído com sucesso.')
+    except Cliente.DoesNotExist:
+        messages.error(request, 'Cliente não encontrado.')
+    return redirect('lista_cliente')
+
+# Detalhes da categoria
+def detalhes_categoria(request, id):
+    categoria = get_object_or_404(Categoria, id=id)
     return render(request, 'categoria/detalhes.html', {'categoria': categoria})
+
+# Detalhes do cliente 
+def detalhes_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id=id)
+    return render(request, 'cliente/detalhes_cliente.html', {'cliente': cliente})

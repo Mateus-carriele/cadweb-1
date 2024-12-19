@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block titulo_conteudo %}Detalhes do Cliente{% endblock %}
+
+{% block conteudo %}
+<div class="container mt-4">
+    <h1>Detalhes do Cliente</h1>
+    <table class="table table-striped mt-3">
+        <tbody>
+            <tr>
+                <th scope="row">ID</th>
+                <td>{{ cliente.id }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Nome</th>
+                <td>{{ cliente.nome }}</td>
+            </tr>
+            <tr>
+                <th scope="row">CPF</th>
+                <td>{{ cliente.cpf }}</td>
+            </tr>
+            <tr>
+                <th scope="row">CPF</th>
+                <td>{{ cliente.datanasc }}</td>
+            </tr>
+            <!-- Adicione outros campos do Cliente conforme necessário -->
+        </tbody>
+    </table>
+    <a href="{% url 'lista_cliente' %}" class="btn btn-primary">Voltar</a>
+</div>
+{% endblock %}

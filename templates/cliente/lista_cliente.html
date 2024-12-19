@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block titulo_conteudo %}Clientes{% endblock %}
+
+{% block conteudo %}
+<div class="container mt-4">
+    <h1>Lista de Clientes</h1>
+    
+    <a href="{% url 'form_cliente' %}" class="btn btn-success mb-3">Adicionar Cliente</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>C.P.F</th>
+                <th>Data de Nascimento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in lista %}
+            <tr>
+                <td>{{ cliente.id }}</td>
+                <td>{{ cliente.nome }}</td>
+                <td>{{ cliente.cpf }}</td>
+                <td>{{ cliente.datanascimento }}</td>
+                <td>
+                    <!-- Botão para editar cliente -->
+                    <a href="{% url 'form_cliente' cliente.id %}" class="btn btn-warning btn-sm">
+                        Editar Cliente
+                    </a>
+                    
+                    <!-- Botão para excluir -->
+                    <form action="{% url 'excluir_cliente' cliente.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este cliente?');">
+                            Excluir
+                        </button>
+                    </form>
+
+                    <!-- Botão para detalhes -->
+                    <a href="{% url 'detalhes_cliente' cliente.id %}" class="btn btn-info btn-sm">Detalhes</a>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
