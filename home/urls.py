@@ -2,8 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Home
     path('', views.index, name="index"),
-    
+    path('produtos/', views.lista_produtos, name='lista_produtos'),
+
     # Categorias
     path('categorias/', views.categoria, name='categoria'),  # Lista de categorias
     path('formulario/', views.form_categoria, name='form_categoria'),  # Criação de categoria
@@ -18,10 +20,5 @@ urlpatterns = [
     path('clientes/excluir/<int:id>/', views.excluir_cliente, name='excluir_cliente'),  # Excluir cliente
     path('cliente/<int:id>/', views.detalhes_cliente, name='detalhes_cliente'),  # Detalhes do cliente
     
-    # Produtos (presumindo que você tenha o modelo Produto)
-    path('produtos/', views.lista_produtos, name='lista_produtos'),  # Lista de produtos
-    path('produtos/formulario/', views.form_produto, name='form_produto'),  # Criação de produto
-    path('produtos/formulario/<int:id>/', views.form_produto, name='form_produto'),  # Edição de produto
-    path('produtos/excluir/<int:id>/', views.excluir_produto, name='excluir_produto'),  # Excluir produto
-    path('produto/<int:id>/', views.detalhes_produto, name='detalhes_produto'),  # Detalhes do produto
+  
 ]

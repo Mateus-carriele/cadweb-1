@@ -7,6 +7,11 @@ def index(request):
     return render(request, 'index.html')
 
 # Lista de categorias
+
+def lista_produtos(request):
+    produtos = Produto.objects.all()  # Buscar todos os produtos no banco de dados
+    return render(request, 'produtos/lista_produtos.html', {'produtos': produtos})
+
 def categoria(request):
     contexto = {
         'lista': Categoria.objects.all().order_by('id'),
