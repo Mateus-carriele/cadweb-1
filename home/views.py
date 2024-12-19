@@ -2,16 +2,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import *  # Agora, ambos os modelos estão sendo importados
 from .forms import *  # Certifique-se de ter os formulários para Categoria e Cliente
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 def index(request):
     return render(request, 'index.html')
 
-# Lista de categorias
 
-def lista_produtos(request):
-    produtos = Produto.objects.all()  # Buscar todos os produtos no banco de dados
-    return render(request, 'produtos/lista_produtos.html', {'produtos': produtos})
 
+    
 def categoria(request):
     contexto = {
         'lista': Categoria.objects.all().order_by('id'),
@@ -81,10 +79,21 @@ def excluir_cliente(request, id):
 
 # Detalhes da categoria
 def detalhes_categoria(request, id):
-    categoria = get_object_or_404(Categoria, id=id)
+    try:
+        categoria = Categoria.objects.get(id=id)
+    except Categoria.DoesNotExist:
+        # Caso o registro não seja encontrado, exibe uma mensagem de erro
+        messages.error(request, 'Registro não encontrado.')
+        return redirect('categoria')  # Redireciona para a listagem de categorias
     return render(request, 'categoria/detalhes.html', {'categoria': categoria})
 
-# Detalhes do cliente 
+# Detalhes do cliente
 def detalhes_cliente(request, id):
-    cliente = get_object_or_404(Cliente, id=id)
+    try:
+        cliente = get_object_or_404(Cliente, id=id)
+    except Cliente.DoesNotExist:  # Exceção corrigida: use "Cliente" com "C" maiúsculo
+        # Caso o registro não seja encontrado, exibe uma mensagem de erro
+        messages.error(request, 'Registro não encontrado.')
+        return redirect('lista_cliente')  # Redireciona para a listagem de clientes
+    
     return render(request, 'cliente/detalhes_cliente.html', {'cliente': cliente})
