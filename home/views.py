@@ -26,8 +26,12 @@ def lista_cliente(request):
 # Formulário para criar ou editar categoria
 def form_categoria(request, id=None):
     categoria = None
-    if id:
-        categoria = get_object_or_404(Categoria, id=id)
+    if id:  # Editar categoria existente
+        try:
+            categoria = Categoria.objects.get(id=id)
+        except Categoria.DoesNotExist:
+            messages.error(request, 'Categoria não encontrada.')
+            return redirect('categoria')  # Redireciona para a lista de categorias
 
     if request.method == 'POST':
         form = CategoriaForm(request.POST, instance=categoria)
@@ -41,16 +45,24 @@ def form_categoria(request, id=None):
     return render(request, 'categoria/formulario.html', {'form': form})
 
 # Formulário para criar ou editar cliente
+# Formulário para criar ou editar cliente
 def form_cliente(request, id=None):
     cliente = None
-    if id:
-        cliente = get_object_or_404(Cliente, id=id)
+    if id:  # Verifica se o ID foi passado para edição
+        try:
+            cliente = Cliente.objects.get(id=id)
+        except Cliente.DoesNotExist:
+            messages.error(request, 'Cliente não encontrado.')
+            return redirect('lista_cliente')  # Redireciona para a lista de clientes
 
     if request.method == 'POST':
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Cliente salvo com sucesso.')
+            if id:
+                messages.success(request, 'Cliente atualizado com sucesso.')
+            else:
+                messages.success(request, 'Cliente criado com sucesso.')
             return redirect('lista_cliente')
     else:
         form = ClienteForm(instance=cliente)
@@ -90,10 +102,8 @@ def detalhes_categoria(request, id):
 # Detalhes do cliente
 def detalhes_cliente(request, id):
     try:
-        cliente = get_object_or_404(Cliente, id=id)
-    except Cliente.DoesNotExist:  # Exceção corrigida: use "Cliente" com "C" maiúsculo
-        # Caso o registro não seja encontrado, exibe uma mensagem de erro
-        messages.error(request, 'Registro não encontrado.')
-        return redirect('lista_cliente')  # Redireciona para a listagem de clientes
-    
+        cliente = Cliente.objects.get(id=id)
+    except Cliente.DoesNotExist:
+        messages.error(request, 'Cliente não encontrado.')
+        return redirect('lista_cliente')  # Redireciona para a lista de clientes
     return render(request, 'cliente/detalhes_cliente.html', {'cliente': cliente})
