@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block titulo %}Lista de Produtos{% endblock %}
+
+{% block conteudo %}
+<div class="container mt-4">
+    <h1>Lista de Produtos</h1>
+    <a href="{% url 'form_produto' %}" class="btn btn-primary mb-3">Novo Produto</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Valor</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>{{ produto.nome }}</td>
+                <td>R$ {{ produto.valor }}</td>
+                <td>
+                    <a href="{% url 'editar_produto' produto.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'excluir_produto' produto.id %}" class="btn btn-danger btn-sm" 
+                       onclick="return confirm('Tem certeza que deseja excluir este produto?')">Excluir</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

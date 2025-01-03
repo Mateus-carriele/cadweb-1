@@ -20,6 +20,13 @@ urlpatterns = [
     path('form_cliente/<int:id>/', views.form_cliente, name='form_cliente'),  # Edição de cliente
     path('clientes/excluir/<int:id>/', views.excluir_cliente, name='excluir_cliente'),  # Excluir cliente
     path('cliente/<int:id>/', views.detalhes_cliente, name='detalhes_cliente'),  # Detalhes do cliente
+
+
+
+    path('produtos/', views.listar_produtos, name='listar_produtos'),
+    path('produtos/novo/', views.form_produto, name='form_produto'),
+    path('produtos/<int:id>/editar/', views.form_produto, name='editar_produto'),
+    path('produtos/<int:id>/excluir/', views.excluir_produto, name='excluir_produto'),
     
   
 ]

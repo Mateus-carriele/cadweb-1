@@ -44,7 +44,7 @@ def form_categoria(request, id=None):
 
     return render(request, 'categoria/formulario.html', {'form': form})
 
-# Formulário para criar ou editar cliente
+
 # Formulário para criar ou editar cliente
 def form_cliente(request, id=None):
     cliente = None
@@ -107,3 +107,57 @@ def detalhes_cliente(request, id):
         messages.error(request, 'Cliente não encontrado.')
         return redirect('lista_cliente')  # Redireciona para a lista de clientes
     return render(request, 'cliente/detalhes_cliente.html', {'cliente': cliente})
+    
+
+
+
+    # Listar produtos
+def listar_produtos(request):
+    produtos = Produto.objects.all().order_by('valor')  # Ordenar por valor
+    return render(request, 'produto/lista.html', {'produtos': produtos})
+# Criar ou editar produto
+def form_produto(request, id=None):
+    produto = None
+    if id:  # Verifica se o ID foi passado para edição
+        try:
+            produto = Produto.objects.get(id=id)  # Corrigido o nome do modelo (Produto)
+        except Produto.DoesNotExist:
+            messages.error(request, 'Produto não encontrado.')
+
+    if request.method == 'POST':
+        form = ProdutoForm(request.POST, instance=produto)
+        if form.is_valid():
+            form.save()
+            if id:  # Corrigido o alinhamento da indentação
+                messages.success(request, 'Produto atualizado com sucesso.')
+            else:
+                messages.success(request, 'Produto criado com sucesso.')
+            
+            return redirect('listar_produtos')
+    else:
+        form = ProdutoForm(instance=produto)
+        
+    produtos = Produto.objects.all().order_by('valor')
+
+    return render(request, 'produto/formulario.html', {'form': form})
+
+
+# Excluir produto
+def excluir_produto(request, id):
+    try:     
+        produto = get_object_or_404(Produto, id=id)
+        produto.delete()
+        messages.success(request, 'Produto excluído com sucesso!')
+    except  produto.DoesNotExist:
+        messages.error(request, 'Produto não encontrado.')
+
+    return redirect('listar_produtos')
+
+def excluir_cliente(request, id):
+    try:
+        cliente = get_object_or_404(Cliente, id=id)
+        cliente.delete()
+        messages.success(request, 'Cliente excluído com sucesso.')
+    except Cliente.DoesNotExist:
+        messages.error(request, 'Cliente não encontrado.')
+    return redirect('lista_cliente')
