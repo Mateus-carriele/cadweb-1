@@ -53,13 +53,27 @@ class ClienteForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'descricao', 'valor', 'disponivel']
+        fields = ['nome', 'descricao', 'valor', 'disponivel', 'categoria', 'img_base64']
         widgets = {
+            'img_base64': forms.HiddenInput(),
+            'categoria': forms.Select(attrs={'class': 'form-control'}),
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Produto'}),
             'descricao': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descrição do Produto', 'rows': 4}),
             'valor': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Valor'}),
             'disponivel': forms.Select(choices=[(True, 'Sim'), (False, 'Não')], attrs={'class': 'form-control'}),
         }
+        labels = {
+            'nome': 'Nome do Produto',
+            'valor': 'Valor do Produto',
+            'descricao': 'Descrição',
+            'disponivel': 'Disponível para Venda',
+            'categoria': 'Categoria',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ProdutoForm, self).__init__(*args, **kwargs)
+        self.fields['valor'].localize = True
+        self.fields['valor'].widget.is_localized = True
 
     def clean_nome(self):
         nome = self.cleaned_data.get('nome')

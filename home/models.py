@@ -31,6 +31,8 @@ class Produto(models.Model):
     descricao = models.TextField(verbose_name="Descrição do Produto", default="Descrição padrão")
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor do Produto", default=0.00)
     disponivel = models.BooleanField(default=True, verbose_name="Disponível para Venda")
+    img_base64 = models.TextField(blank=True, verbose_name="Imagem Base64")
+    categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE, verbose_name="Categoria")
 
     def __str__(self):
         return self.nome
