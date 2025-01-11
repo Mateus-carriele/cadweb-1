@@ -3,6 +3,7 @@ from .models import *  # Agora, ambos os modelos estão sendo importados
 from .forms import *  # Certifique-se de ter os formulários para Categoria e Cliente
 from django.contrib import messages
 from django.core.paginator import Paginator
+import base64
 
 def index(request):
     return render(request, 'index.html')
@@ -153,11 +154,26 @@ def excluir_produto(request, id):
 
     return redirect('listar_produtos')
 
-def excluir_cliente(request, id):
+
+# Detalhes do produtos
+def detalhes_produto(request, id):
     try:
-        cliente = get_object_or_404(Cliente, id=id)
-        cliente.delete()
-        messages.success(request, 'Cliente excluído com sucesso.')
-    except Cliente.DoesNotExist:
-        messages.error(request, 'Cliente não encontrado.')
-    return redirect('lista_cliente')
+        produto = Produto.objects.get(id=id)
+    except Produto.DoesNotExist:
+        # Caso o registro não seja encontrado, exibe uma mensagem de erro
+        messages.error(request, 'Registro não encontrado.')
+        return redirect('listar_produtos')  # Certifique-se de que 'listar_produtos' está configurado em urls.py
+    return render(request, 'produto/detalhes.html', {'produto': produto})
+
+
+def ajustar_estoque(request, id):
+    produto = Produto.objects.get(pk=id)
+    estoque = produto.estoque # pega o objeto estoque relacionado ao produto
+    if request.method == 'POST':
+        form = EstoqueForm(request.POST, instance=estoque)
+        if form.is_valid():
+            form.save()
+            return render(request, 'produto/detalhes.html', {'form': form,})
+    else:
+         form = EstoqueForm(instance=estoque)
+    return render(request, 'produto/estoque.html', {'form': form,})

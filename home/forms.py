@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 from datetime import date
+import base64
 
 
 class CategoriaForm(forms.ModelForm):
@@ -80,3 +81,17 @@ class ProdutoForm(forms.ModelForm):
         if len(nome) < 5:
             raise forms.ValidationError("O nome deve ter pelo menos 5 caracteres.")
         return nome
+
+
+class EstoqueForm(forms.ModelForm):
+    class Meta:
+        model = Estoque
+        fields = ['produto', 'qtde']
+
+        widgets = {
+            'produto': forms.HiddenInput(),
+            'qtde': forms.TextInput(attrs={'class': 'inteiro form-control', 'placeholder': 'Quantidade'}),
+        }
+
+
+    
