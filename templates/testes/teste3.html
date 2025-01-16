@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+
+{% block titulo_conteudo %} Isso é um teste 3 {% endblock titulo_conteudo %}
+
+
+{% block conteudo %} 
+
+
+<p>
+    <label for="id_categoria_nome">Categoria:</label>
+    <!-- autocomplete -->
+    <input type="text" class="form-control autocomplete" 
+        id="id_categoria_nome" 
+        data-url="{% url 'buscar_dados' 'home.Categoria' %}" 
+        data-hidden="#id_categoria" >
+    <input type="hidden" id="id_categoria">
+</p>
+
+<p>
+    <label for="id_cliente_nome">Clientes:</label>
+    <!-- autocomplete -->
+    <input type="text" class="form-control autocomplete" 
+        id="id_cliente_nome" 
+        data-url="{% url 'buscar_dados' 'home.cliente' %}" 
+        data-hidden="#id_cliente" >
+    <input type="hidden" id="id_cliente">
+</p>
+
+<p>
+    <label for="id_produto_nome">Produtos:</label>
+    <!-- autocomplete -->
+    <input type="text" class="form-control autocomplete" 
+        id="id_produto_nome" 
+        data-url="{% url 'buscar_dados' 'home.produto' %}" 
+        data-hidden="#id_produto" >
+    <input type="hidden" id="id_produto">
+</p>
+
+
+
+
+
+{% endblock conteudo %}
+
+
+{% block javascript %}
+
+
+
+
+
+
+{% endblock javascript %}

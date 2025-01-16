@@ -4,9 +4,12 @@ from .forms import *  # Certifique-se de ter os formulários para Categoria e Cl
 from django.contrib import messages
 from django.core.paginator import Paginator
 import base64
+from django.http import JsonResponse
+from django.apps import apps
 
 def index(request):
     return render(request, 'index.html')
+
 
 
 
@@ -177,3 +180,33 @@ def ajustar_estoque(request, id):
     else:
          form = EstoqueForm(instance=estoque)
     return render(request, 'produto/estoque.html', {'form': form,})
+
+
+
+def buscar_dados(request, app_modelo):
+    termo = request.GET.get('q', '') # pega o termo digitado
+    try:
+        # Divida o app e o modelo
+        app, modelo = app_modelo.split('.')
+        modelo = apps.get_model(app, modelo)
+    except LookupError:
+        return JsonResponse({'error': 'Modelo não encontrado'}, status=404)
+    
+    # Verifica se o modelo possui os campos 'nome' e 'id'
+    if not hasattr(modelo, 'nome') or not hasattr(modelo, 'id'):
+        return JsonResponse({'error': 'Modelo deve ter campos "id" e "nome"'}, status=400)
+    
+    resultados = modelo.objects.filter(nome__icontains=termo)
+    dados = [{'id': obj.id, 'nome': obj.nome} for obj in resultados]
+    return JsonResponse(dados, safe=False)
+
+
+
+def testes1(request):
+    return render(request, 'testes/testes1.html')
+    
+def testes2(request):
+    return render(request, 'testes/testes2.html')
+
+def teste3(request):
+    return render(request, 'testes/teste3.html')

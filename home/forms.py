@@ -57,7 +57,7 @@ class ProdutoForm(forms.ModelForm):
         fields = ['nome', 'descricao', 'valor', 'disponivel', 'categoria', 'img_base64']
         widgets = {
             'img_base64': forms.HiddenInput(),
-            'categoria': forms.Select(attrs={'class': 'form-control'}),
+            'categoria': forms.HiddenInput(),
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Produto'}),
             'descricao': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descrição do Produto', 'rows': 4}),
             'valor': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Valor'}),

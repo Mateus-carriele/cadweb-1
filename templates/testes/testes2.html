@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+{% block titulo_conteudo %} Isso é um teste {% endblock titulo_conteudo %}
+
+
+{% block conteudo %} 
+
+
+<p>
+    <nome for="estado">Digite um estado: </nome>
+    <input type="text" class="autocomplete">
+    <input type="hidden" id="idestado">
+</p>
+
+
+{% endblock conteudo %}
+
+
+{% block javascript %}
+
+
+<script>
+    $(document).ready(function () {
+        // Lista de países
+        const estados = [
+            { id: 1, label: "Piauí" },
+            { id: 2, label: "Rio de Janeiro" },
+            { id: 3, label: "Minas Gerais" },
+            { id: 4, label: "Bahia" },
+            { id: 5, label: "Paraná" }
+     ];
+           // Ativando o autocomplete no campo
+           $(".autocomplete").autocomplete({
+            source: estados, // Fonte de dados
+            minLength: 1, // Número mínimo de caracteres para ativar o autocomplete
+            select: function (event, ui) {
+                // Quando o item é selecionado:
+                $(this).val(ui.item.label); // Define o texto no campo
+                $("#idestado").val(ui.item.id); // Define o ID no campo oculto
+                return false; // Evita que o valor padrão do autocomplete seja inserido
+            }
+        });
+    });
+    
+</script>
+
+
+{% endblock javascript %}
