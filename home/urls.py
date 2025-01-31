@@ -5,7 +5,7 @@ urlpatterns = [
     # Home
     path('', views.index, name="index"),
   
-
+   path('buscar_dados/<str:app_modelo>/', views.buscar_dados, name='buscar_dados'),
 
     # Categorias
     path('categorias/', views.categoria, name='categoria'),  # Lista de categorias
@@ -35,5 +35,13 @@ urlpatterns = [
     path('testes1', views.testes1, name='testes1'),
     path('testes2', views.testes2, name='testes2'),
     path('teste3', views.teste3, name='teste3'),
+
+
+
+    path('pedidos/', views.pedido, name='pedido'),
+    path('pedido/novo/<int:cliente_id>/', views.novo_pedido, name='novo_pedido'),
+    path('pedido/detalhes/<int:id>/', views.detalhes_pedido, name='detalhes_pedido'),
+
+
   
 ]

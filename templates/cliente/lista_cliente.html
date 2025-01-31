@@ -26,6 +26,13 @@
                 <td>{{ cliente.cpf }}</td>
                 <td>{{ cliente.datanascimento }}</td>
                 <td>
+
+                    <button
+                        onClick="location.href='{% url 'novo_pedido' cliente.id %}'"
+                        type="button" class="btn btn-primary btn-sm">Novo Pedido
+                    </button>
+
+
                     <!-- Botão para editar cliente -->
                     <a href="{% url 'form_cliente' cliente.id %}" class="btn btn-warning btn-sm">
                         Editar Cliente

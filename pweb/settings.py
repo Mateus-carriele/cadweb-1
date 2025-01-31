@@ -78,8 +78,14 @@ WSGI_APPLICATION = 'pweb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+
 DATABASES = {
-   'default': dj_database_url.parse('postgres://neondb_owner:uOhozSGk6g9N@ep-flat-hall-a4moyzfz-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+    'default': dj_database_url.config(
+        default='postgres://neondb_owner:uOhozSGk6g9N@ep-flat-hall-a4moyzfz-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require',
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
@@ -137,3 +143,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

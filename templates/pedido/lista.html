@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+
+{% block titulo_conteudo %} Listagem de Pedidos {% endblock titulo_conteudo %}
+
+
+{% block conteudo %} 
+
+
+<div class="barrabotoes">
+  <button onClick="location='{% url "pedido" %}'" type="button" class="btn btn-primary btn-sm">Recarregar</button>
+
+
+</div>
+
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Data</th>
+        <th>Situação</th>
+        <th>Produtos</th>
+        <th>Total (R$)</th>
+        
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for pedido in lista %}
+      <tr>
+        <td>{{ pedido.id }}</td>
+        <td>{{ pedido.cliente.nome }}</td>
+        <td>{{ pedido.data_pedidof}}</td>
+        <td>{{ pedido.get_status_display }}</td>
+        <td>?</td>  
+        <td>?</td>      
+        <td>
+            <button onClick="location='{% url 'detalhes_pedido' pedido.id %}'" type="button" class="btn btn-primary btn-sm">Detalhes</button>
+
+          <a href="" class="btn btn-danger btn-sm" 
+          onclick="return confirm('Tem certeza que deseja remover este registro?');">Remover</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+
+
+{% endblock conteudo %}

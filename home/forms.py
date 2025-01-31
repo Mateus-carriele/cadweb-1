@@ -50,25 +50,23 @@ class ClienteForm(forms.ModelForm):
             raise forms.ValidationError('A data de nascimento não pode ser no futuro!')
         return datanasc
 
-
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'descricao', 'valor', 'disponivel', 'categoria', 'img_base64']
+        fields = ['nome', 'valor', 'categoria', 'img_base64']
         widgets = {
-            'img_base64': forms.HiddenInput(),
             'categoria': forms.HiddenInput(),
-            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Produto'}),
-            'descricao': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descrição do Produto', 'rows': 4}),
-            'valor': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Valor'}),
-            'disponivel': forms.Select(choices=[(True, 'Sim'), (False, 'Não')], attrs={'class': 'form-control'}),
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome'}),
+            'img_base64': forms.HiddenInput(), 
+            'valor': forms.TextInput(attrs={
+                'class': 'money form-control',
+                'maxlength': 500,
+                'placeholder': '0.000,00'
+            }),
         }
         labels = {
             'nome': 'Nome do Produto',
-            'valor': 'Valor do Produto',
-            'descricao': 'Descrição',
-            'disponivel': 'Disponível para Venda',
-            'categoria': 'Categoria',
+            'valor': 'Preço do Produto',
         }
 
     def __init__(self, *args, **kwargs):
@@ -76,11 +74,28 @@ class ProdutoForm(forms.ModelForm):
         self.fields['valor'].localize = True
         self.fields['valor'].widget.is_localized = True
 
+    def clean_categoria(self):
+        categoria = self.cleaned_data.get('categoria')
+        if not categoria:
+            raise forms.ValidationError('Categoria não encontrada.')
+        return categoria
+
     def clean_nome(self):
         nome = self.cleaned_data.get('nome')
         if len(nome) < 5:
             raise forms.ValidationError("O nome deve ter pelo menos 5 caracteres.")
         return nome
+
+    def is_img_base64_valid(self):
+        """Verifica se img_base64 contém dados válidos."""
+        try:
+            if self.cleaned_data['img_base64']:
+                base64.b64decode(self.cleaned_data['img_base64'])
+                return True
+            return False
+        except base64.binascii.Error:
+            return False
+
 
 
 class EstoqueForm(forms.ModelForm):
@@ -94,4 +109,24 @@ class EstoqueForm(forms.ModelForm):
         }
 
 
-    
+class PedidoForm(forms.ModelForm):
+    class Meta:
+        model = Pedido
+        fields = ['cliente']
+        widgets = {
+            'cliente': forms.HiddenInput(),  # Campo oculto para armazenar o ID
+        }
+
+
+
+class ItemPedidoForm(forms.ModelForm):
+    class Meta:
+        model = ItemPedido
+        fields = ['pedido','produto', 'qtde']
+
+
+        widgets = {
+            'pedido': forms.HiddenInput(),  # Campo oculto para armazenar o ID
+            'produto': forms.HiddenInput(),  # Campo oculto para armazenar o ID
+            'qtde':forms.TextInput(attrs={'class': 'form-control',}),
+        }

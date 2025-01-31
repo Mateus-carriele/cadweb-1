@@ -6,6 +6,8 @@ from django.core.paginator import Paginator
 import base64
 from django.http import JsonResponse
 from django.apps import apps
+from django.db.models import Q
+
 
 def index(request):
     return render(request, 'index.html')
@@ -182,7 +184,6 @@ def ajustar_estoque(request, id):
     return render(request, 'produto/estoque.html', {'form': form,})
 
 
-
 def buscar_dados(request, app_modelo):
     termo = request.GET.get('q', '') # pega o termo digitado
     try:
@@ -202,6 +203,7 @@ def buscar_dados(request, app_modelo):
 
 
 
+
 def testes1(request):
     return render(request, 'testes/testes1.html')
     
@@ -210,3 +212,51 @@ def testes2(request):
 
 def teste3(request):
     return render(request, 'testes/teste3.html')
+
+
+
+
+def pedido(request):
+    lista = Pedido.objects.all().order_by('-id')
+    return render(request, 'pedido/lista.html', {'lista': lista})
+
+
+def novo_pedido(request, cliente_id):  # Alterado de 'id' para 'cliente_id'
+    if request.method == 'GET':
+        try:
+            cliente = Cliente.objects.get(pk=cliente_id)
+        except Cliente.DoesNotExist:
+            messages.error(request, 'Registro não encontrado')
+            return redirect('cliente')  
+        
+        pedido = Pedido(cliente=cliente)
+        form = PedidoForm(instance=pedido)
+        return render(request, 'pedido/form.html', {'form': form})
+    
+    else:  
+        form = PedidoForm(request.POST)
+        if form.is_valid():
+            pedido = form.save()
+            return redirect('pedido')
+
+
+def detalhes_pedido(request, id):
+    try:
+        pedido = Pedido.objects.get(pk=id)
+    except Pedido.DoesNotExist:
+        # Caso o registro não seja encontrado, exibe a mensagem de erro
+        messages.error(request, 'Registro não encontrado')
+        return redirect('pedido')  # Redireciona para a listagem    
+    
+    if request.method == 'GET':
+        itemPedido = ItemPedido(pedido=pedido)
+        form = ItemPedidoForm(instance=itemPedido)
+    else:
+        form = ItemPedidoForm(request.POST)
+        # aguardando implementação POST, salvar item
+    
+    contexto = {
+        'pedido': pedido,
+        'form': form,
+    }
+    return render(request, 'pedido/detalhes.html',contexto )

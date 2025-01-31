@@ -1,57 +1,77 @@
 {% extends "base.html" %}
 
-{% block titulo %}PRODUTO{% endblock %}
 
-{% block conteudo %}
-<div class="container mt-4">
-    <h1>PRODOTO</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+{% block titulo_conteudo %} Formulário de Produtos {% endblock titulo_conteudo %}
 
-        <p>
-            <label for="id_categoria_nome">Categoria:</label>
-            <!-- autocomplete -->
-            <input type="text" class="form-control autocomplete" 
-                id="id_categoria_nome" 
-                data-url="{% url 'buscar_dados' 'home.Categoria' %}" 
-                data-hidden="#id_categoria" >
-            <input type="hidden" id="id_categoria">
-        </p>
-        
 
-        <fieldset class="fieldset">
-            <label for="imagem">Imagem:</label>
-            <input type="hidden" 
-                id="img_base64"  
-                class="img_init" 
-                data-canvas="imageCanvas" 
-                value="{{form.instance.img_base64}}" 
-                name="img_base64">
+{% block conteudo %} 
+<form method="post">
+    {% csrf_token %}    
+    {{ form.as_p }}
+
+
+    <p>
+        <label for="id_categoria_nome">Categoria:</label>
+        <!-- autocomplete -->
+        <input type="text" value="{{form.instance.categoria}}" 
+            class="form-control autocomplete" 
+            id="id_categoria_nome" 
+            data-url="{% url 'buscar_dados' 'home.Categoria' %}" 
+            data-hidden="#id_categoria" >
+    </p>
     
-            <input type="file" id="imagem" 
-                name="imagem" 
-                data-hidden="img_base64" 
-                class="img_upload form-control" 
-                accept="image/*"><br>
+
+
+    <fieldset class="fieldset">
+        <label for="imagem">Imagem:</label>
+        <input type="hidden" 
+            id="img_base64"  
+            class="img_init" 
+            data-canvas="imageCanvas" 
+            value="{{form.instance.img_base64}}" 
+            name="img_base64">
+
+
+        <input type="file" id="imagem" 
+            name="imagem" 
+            data-hidden="img_base64" 
+            class="img_upload form-control" 
+            accept="image/*"><br>
+
+
+        <canvas class="canvas"  id="imageCanvas" width="200" height="200"></canvas><br>
+
+
+    </fieldset>
+
+
+    <p>
     
-            <canvas class="canvas"  id="imageCanvas" width="200" height="200"></canvas><br>
+</p>
+
+
+    <button class="btn btn-primary btn-sm" type="submit">Salvar</button>
+
+
+
+
     
-        </fieldset>
 
 
+</form>
 
 
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <a href="{% url 'listar_produtos' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
-</div>
-{% endblock %}
+{% endblock conteudo %}
+
+
 {% block javascript %}
 <script>
 
 
+
+
     $(document).ready(function() {
+
 
         // Configura inicialização das imagens base64 para todo campo da classe img_init
         $('.img_init').each(function() {
@@ -71,13 +91,16 @@
                 const reader = new FileReader();
                 reader.readAsDataURL(imagemInput); // Converte a imagem para base64
 
+
                 reader.onload = function() {
                     const imgBase64 = reader.result; // O resultado da conversão
+                   
                     $('#'+hidden).val(imgBase64); // Seta o valor base64 no campo hidden associado ao file input
                     var canvasTarget = $('#'+hidden).data('canvas'); // pega o canvas associado ao compo hidden
                     // Exibe a nova imagem no canvas
                     loadImage(imgBase64,canvasTarget);
                 };
+
 
                 reader.onerror = function(error) {
                     console.log('Erro ao converter a imagem: ', error);
@@ -86,5 +109,6 @@
         });
     });
 </script>
+
 
 {% endblock javascript %}
