@@ -122,11 +122,15 @@ class PedidoForm(forms.ModelForm):
 class ItemPedidoForm(forms.ModelForm):
     class Meta:
         model = ItemPedido
-        fields = ['pedido','produto', 'qtde']
-
-
+        fields = ['pedido', 'produto', 'qtde']
         widgets = {
-            'pedido': forms.HiddenInput(),  # Campo oculto para armazenar o ID
-            'produto': forms.HiddenInput(),  # Campo oculto para armazenar o ID
-            'qtde':forms.TextInput(attrs={'class': 'form-control',}),
+            'pedido': forms.HiddenInput(),
+            'produto': forms.HiddenInput(),
+            'qtde': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
         }
+
+    def clean_qtde(self):
+        qtde = self.cleaned_data.get('qtde')
+        if qtde <= 0:
+            raise forms.ValidationError('A quantidade deve ser maior que zero.')
+        return qtde

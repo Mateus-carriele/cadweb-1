@@ -260,3 +260,98 @@ def detalhes_pedido(request, id):
         'form': form,
     }
     return render(request, 'pedido/detalhes.html',contexto )
+
+
+
+
+def remover_item_pedido(request, id):
+    try:
+        item_pedido = ItemPedido.objects.get(pk=id)
+    except ItemPedido.DoesNotExist:
+        # Caso o registro não seja encontrado, exibe a mensagem de erro
+        messages.error(request, 'Registro não encontrado')
+        return redirect('detalhes_pedido', id=id)
+    
+    pedido_id = item_pedido.pedido.id  # Armazena o ID do pedido antes de remover o item
+    estoque = item_pedido.produto.estoque  # Obtém o estoque do produto
+    estoque.qtde += item_pedido.qtde  # Devolve a quantidade do item ao estoque
+    estoque.save()  # Salva as alterações no estoque
+    # Remove o item do pedido
+    item_pedido.delete()
+    messages.success(request, 'Operação realizada com Sucesso')
+
+
+    # Redireciona de volta para a página de detalhes do pedido
+    return redirect('detalhes_pedido', id=pedido_id)
+
+
+
+def adicionar_item_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    
+    if request.method == 'POST':
+        form = ItemPedidoForm(request.POST)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.pedido = pedido
+
+            # Verifica o estoque
+            produto = item.produto
+            estoque = produto.estoque
+            if estoque.qtde < item.qtde:
+                messages.error(request, 'Estoque insuficiente!')
+                return redirect('detalhes_pedido', id=pedido_id)
+
+            # Define o preço do produto
+            item.preco = produto.valor
+
+            # Atualiza o estoque
+            estoque.qtde -= item.qtde
+            estoque.save()
+
+            # Salva o item no pedido
+            item.save()
+            messages.success(request, 'Item adicionado com sucesso!')
+            return redirect('detalhes_pedido', id=pedido_id)
+    else:
+        form = ItemPedidoForm()
+
+    return render(request, 'pedido/adicionar_item.html', {'form': form, 'pedido': pedido})
+
+
+
+
+def editar_item_pedido(request, item_id):
+    item = get_object_or_404(ItemPedido, id=item_id)
+    pedido = item.pedido
+    quantidade_anterior = item.qtde
+
+    if request.method == 'POST':
+        form = ItemPedidoForm(request.POST, instance=item)
+        if form.is_valid():
+            nova_quantidade = form.cleaned_data['qtde']
+            produto = item.produto
+            estoque = produto.estoque
+
+            # Verifica se há estoque suficiente
+            diferenca = nova_quantidade - quantidade_anterior
+            if estoque.qtde < diferenca:
+                messages.error(request, 'Estoque insuficiente para a nova quantidade!')
+                return redirect('detalhes_pedido', id=pedido.id)
+
+            # Atualiza o estoque
+            estoque.qtde -= diferenca
+            estoque.save()
+
+            # Salva o item atualizado
+            form.save()
+            messages.success(request, 'Item atualizado com sucesso!')
+            return redirect('detalhes_pedido', id=pedido.id)
+    else:
+        form = ItemPedidoForm(instance=item)
+
+    return render(request, 'pedido/editar_item.html', {'form': form, 'item': item})
+
+
+
+
