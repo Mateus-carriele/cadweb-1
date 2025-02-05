@@ -3,7 +3,6 @@ from .models import *
 from datetime import date
 import base64
 
-
 class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categoria
@@ -25,7 +24,6 @@ class CategoriaForm(forms.ModelForm):
             raise forms.ValidationError("O campo ordem deve ser maior que zero.")
         return ordem
 
-
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
@@ -35,7 +33,7 @@ class ClienteForm(forms.ModelForm):
             'cpf': forms.TextInput(attrs={'class': 'cpf form-control', 'placeholder': 'C.P.F'}),
             'datanasc': forms.DateInput(
                 attrs={'class': 'data form-control', 'placeholder': 'Data de Nascimento'}, format='%d/%m/%Y'
-            ),
+            ),  # Parêntese fechado corretamente
         }
 
     def clean_nome(self):
@@ -57,7 +55,7 @@ class ProdutoForm(forms.ModelForm):
         widgets = {
             'categoria': forms.HiddenInput(),
             'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome'}),
-            'img_base64': forms.HiddenInput(), 
+            'img_base64': forms.HiddenInput(),
             'valor': forms.TextInput(attrs={
                 'class': 'money form-control',
                 'maxlength': 500,
@@ -87,7 +85,6 @@ class ProdutoForm(forms.ModelForm):
         return nome
 
     def is_img_base64_valid(self):
-        """Verifica se img_base64 contém dados válidos."""
         try:
             if self.cleaned_data['img_base64']:
                 base64.b64decode(self.cleaned_data['img_base64'])
@@ -96,36 +93,30 @@ class ProdutoForm(forms.ModelForm):
         except base64.binascii.Error:
             return False
 
-
-
 class EstoqueForm(forms.ModelForm):
     class Meta:
         model = Estoque
         fields = ['produto', 'qtde']
-
         widgets = {
             'produto': forms.HiddenInput(),
             'qtde': forms.TextInput(attrs={'class': 'inteiro form-control', 'placeholder': 'Quantidade'}),
         }
-
 
 class PedidoForm(forms.ModelForm):
     class Meta:
         model = Pedido
         fields = ['cliente']
         widgets = {
-            'cliente': forms.HiddenInput(),  # Campo oculto para armazenar o ID
+            'cliente': forms.HiddenInput(),
         }
-
-
 
 class ItemPedidoForm(forms.ModelForm):
     class Meta:
         model = ItemPedido
-        fields = ['pedido', 'produto', 'qtde']
+        fields = ['pedido', 'produto', 'qtde', ]
         widgets = {
             'pedido': forms.HiddenInput(),
-            'produto': forms.HiddenInput(),
+            'produto': forms.Select(attrs={'class': 'form-control'}),
             'qtde': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
         }
 
@@ -134,3 +125,10 @@ class ItemPedidoForm(forms.ModelForm):
         if qtde <= 0:
             raise forms.ValidationError('A quantidade deve ser maior que zero.')
         return qtde
+
+    def save(self, commit=True):
+        item = super().save(commit=False)
+        item.valor = item.produto.valor * item.qtde  # Atribui o valor total com base no produto e quantidade
+        if commit:
+            item.save()
+        return item
