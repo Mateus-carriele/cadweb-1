@@ -116,7 +116,7 @@ class ItemPedidoForm(forms.ModelForm):
         fields = ['pedido', 'produto', 'qtde', ]
         widgets = {
             'pedido': forms.HiddenInput(),
-            'produto': forms.Select(attrs={'class': 'form-control'}),
+            'produto': forms.HiddenInput(),
             'qtde': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
         }
 
@@ -132,3 +132,25 @@ class ItemPedidoForm(forms.ModelForm):
         if commit:
             item.save()
         return item
+
+
+
+class PagamentoForm(forms.ModelForm):
+    class Meta:
+        model = Pagamento
+        fields = ['pedido','forma','valor']
+        widgets = {
+            'pedido': forms.HiddenInput(),  # Campo oculto para armazenar o ID
+            # Usando Select para renderizar as opções
+            'forma': forms.Select(attrs={'class': 'form-control'}),  
+            'valor':forms.TextInput(attrs={
+                'class': 'money form-control',
+                'maxlength': 500,
+                'placeholder': '0.000,00'
+            }),
+         }
+        
+    def __init__(self, *args, **kwargs):
+            super(PagamentoForm, self).__init__(*args, **kwargs)
+            self.fields['valor'].localize = True
+            self.fields['valor'].widget.is_localized = True      

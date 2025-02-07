@@ -1,11 +1,14 @@
 from django.urls import path
 from . import views
 
+# Ensure form_pagamento is imported or defined before it is used in urlpatterns
+from .views import form_pagamento
+
 urlpatterns = [
     # Home
     path('', views.index, name="index"),
   
-   path('buscar_dados/<str:app_modelo>/', views.buscar_dados, name='buscar_dados'),
+    path('buscar_dados/<str:app_modelo>/', views.buscar_dados, name='buscar_dados'),
 
     # Categorias
     path('categorias/', views.categoria, name='categoria'),  # Lista de categorias
@@ -21,8 +24,7 @@ urlpatterns = [
     path('clientes/excluir/<int:id>/', views.excluir_cliente, name='excluir_cliente'),  # Excluir cliente
     path('cliente/<int:id>/', views.detalhes_cliente, name='detalhes_cliente'),  # Detalhes do cliente
 
-
-
+    # Produtos
     path('produtos/', views.listar_produtos, name='listar_produtos'),
     path('produtos/novo/', views.form_produto, name='form_produto'),
     path('produtos/<int:id>/editar/', views.form_produto, name='editar_produto'),
@@ -30,21 +32,21 @@ urlpatterns = [
     path('produtos/detalhes/<int:id>/', views.detalhes_produto, name='detalhes_produto'),
     path('ajustar_estoque/<int:id>', views.ajustar_estoque, name='ajustar_estoque'),
 
-
+    # Testes
     path('buscar_dados/<str:app_modelo>', views.buscar_dados, name='buscar_dados'),
     path('testes1', views.testes1, name='testes1'),
     path('testes2', views.testes2, name='testes2'),
     path('teste3', views.teste3, name='teste3'),
 
-
-
+    # Pedidos
     path('pedidos/', views.pedido, name='pedido'),
     path('pedido/remover/<int:id>/', views.remover_pedido, name='remover_pedido'),
     path('pedido/novo/<int:cliente_id>/', views.novo_pedido, name='novo_pedido'),
     path('pedido/detalhes/<int:id>/', views.detalhes_pedido, name='detalhes_pedido'),
     path('pedido/<int:pedido_id>/adicionar_item/', views.adicionar_item_pedido, name='adicionar_item_pedido'),
-    path('pedido/editar_item/<int:item_id>/', views.editar_item_pedido, name='editar_item_pedido'),
-    path('pedido/remover_item/<int:item_id>/', views.remover_item_pedido, name='remover_item_pedido'),
-
-  
+    path('pedido/editar_item/<int:id>/', views.editar_item_pedido, name='editar_item_pedido'),
+    path('pagamento/<int:id>/editar/', views.editar_pagamento, name='editar_pagamento'),
+    path('pagamento/<int:id>/excluir/', views.excluir_pagamento, name='excluir_pagamento'),
+    path('pedido/remover_item/<int:id>/', views.remover_item_pedido, name='remover_item_pedido'),
+    path('pedido/pagamento/<int:id>/', views.form_pagamento, name='form_pagamento'),  # Use views.form_pagamento
 ]

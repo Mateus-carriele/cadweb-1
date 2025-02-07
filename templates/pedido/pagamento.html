@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+
+{% block titulo_conteudo %} Registro de Pagamento {% endblock titulo_conteudo %}
+
+
+{% block conteudo %} 
+
+
+<p>
+    <label for="id_cliene">Pedido:</label>
+    <span class="form-control" >{{form.instance.pedido}}</span>
+    
+  </p>
+  <p>
+    <label for="id_data">Data:</label>
+    <span class="form-control">{{ form.instance.pedido.data_pedidof }}</span>
+  </p>
+
+
+
+<form method="post">
+    {% csrf_token %}    
+    {{ form.as_p }}
+    <button class="btn btn-primary btn-sm" type="submit">Salvar</button>
+    <button type="button" onclick="location='{% url 'detalhes_pedido' form.instance.pedido.id %}'" class="btn btn-secondary btn-sm">Voltar</button>
+
+
+</form>
+
+
+
+
+
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Valor (R$)</th>
+      <th>Forma</th>
+      <th>Data</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for pagamento in form.instance.pedido.pagamentos %}
+    <tr>
+      <td>{{ pagamento.id }}</td>
+      <td>{{ pagamento.valor }}</td>
+      <td>{{ pagamento.get_forma_display }}</td>
+      <td>{{ pagamento.data_pgtof }}</td>
+
+
+      <td>
+        <a href="{% url 'editar_pagamento' pagamento.id %}" class="btn btn-warning btn-sm">Editar</a>
+        <a href="{% url 'excluir_pagamento' pagamento.id %}" class="btn btn-danger btn-sm"
+           onclick="return confirm('Tem certeza que deseja remover este registro?');">Excluir</a>
+    </td>
+    
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<hr>
+<tr>
+  <td colspan="3" style="text-align: right;"><strong>Total do Pedido (R$):</strong></td>
+  <td><strong>{{ pedido.total|floatformat:2 }}</strong></td>
+</tr><br>
+<tr>
+  <td colspan="3" style="text-align: right;"><strong>Total Pago (R$):</strong></td>
+  <td><strong>{{ pedido.total_pago|floatformat:2 }}</strong></td>
+</tr><br>
+<tr>
+  <td colspan="3" style="text-align: right;"><strong>Débito (R$):</strong></td>
+  <td><strong>{{ pedido.debito|floatformat:2 }}</strong></td>
+</tr>
+
+{% endblock conteudo %}
+
+
+{% block javascript %}
+{% endblock javascript %}

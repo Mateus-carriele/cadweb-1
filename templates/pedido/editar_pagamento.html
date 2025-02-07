@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block titulo_conteudo %} Editar Pagamento {% endblock titulo_conteudo %}
+
+{% block conteudo %}
+<h2>Editar Pagamento</h2>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Salvar</button>
+    <a href="{% url 'detalhes_pedido' pedido.id %}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}
