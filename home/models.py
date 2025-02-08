@@ -87,6 +87,11 @@ class Pedido(models.Model):
         if self.data_pedido:
             return self.data_pedido.strftime('%d/%m/%Y %H:%M')
         return "Data não disponível"
+        
+    @property
+    def qtdeItens(self):
+        """Retorna a quantidade total de itens no pedido."""
+        return sum(item.qtde for item in self.itempedido_set.all())
 
 from django.db import models
 

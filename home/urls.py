@@ -1,15 +1,27 @@
 from django.urls import path
 from . import views
-
+from django.contrib.auth.views import LoginView, LogoutView
 # Ensure form_pagamento is imported or defined before it is used in urlpatterns
 from .views import form_pagamento
+from django.contrib import admin
+from django.urls import path, include
+from django.contrib.auth.views import LoginView, LogoutView
+
+
 
 urlpatterns = [
     # Home
-    path('', views.index, name="index"),
-  
-    path('buscar_dados/<str:app_modelo>/', views.buscar_dados, name='buscar_dados'),
+    # Padrão para o admin
+    path('admin/', admin.site.urls),
+    
+    # Autenticação de usuário
+    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 
+    # A página inicial redireciona para a aplicação 'home'
+    
+    path('buscar_dados/<str:app_modelo>/', views.buscar_dados, name='buscar_dados'),
+    path('', views.index, name="index"),
     # Categorias
     path('categorias/', views.categoria, name='categoria'),  # Lista de categorias
     path('formulario/', views.form_categoria, name='form_categoria'),  # Criação de categoria

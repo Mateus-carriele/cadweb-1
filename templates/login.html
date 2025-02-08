@@ -1,0 +1,11 @@
+<!-- login.html -->
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h2>Login</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Entrar</button>
+</form>
+{% endblock %}

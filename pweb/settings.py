@@ -142,7 +142,14 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# URL para redirecionar usuários não autenticados ao tentar acessar uma página protegida
+LOGIN_URL = '/login/'
 
+# URL para redirecionar usuários após um login bem-sucedido
+LOGIN_REDIRECT_URL = '/'
+
+# URL para redirecionar usuários após o logout
+LOGOUT_REDIRECT_URL = '/login/'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
