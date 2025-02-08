@@ -463,6 +463,7 @@ def excluir_pagamento(request, id):
         pagamento = get_object_or_404(Pagamento, pk=id)
         pedido = pagamento.pedido  # Obtém o pedido antes de excluir
         pagamento.delete()  # Remove o pagamento
+        pedido.save()  # Salva o pedido novamente para garantir que os totais sejam recalculados
         messages.success(request, 'Pagamento removido com sucesso!')
     except Pagamento.DoesNotExist:
         messages.error(request, 'Pagamento não encontrado.')

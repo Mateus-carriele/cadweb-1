@@ -21,10 +21,11 @@
     </p>
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary btn-sm">Salvar Produto</button>
-    <button type="button" onclick="location='{% url 'form_pagamento' pedido.id %}'" class="btn btn-primary">Registrar Pagamento</button>
+    <button type="button" onclick="location='{% url 'form_pagamento' pedido.id %}'" class="btn btn-primary btn-sm">Registrar Pagamento</button>
+    <button type="button" onclick="location='{% url 'pedido' %}'" class="btn btn-secondary btn-sm">Voltar</button>
+
 
 </form>
-
 
 <hr>
 <h5>Itens do Pedido</h5>
@@ -42,40 +43,32 @@
       {% for item in pedido.itempedido_set.all %}
       <tr>
           <td>  
-            <img  src="{{item.produto.img_base64}} " width="100" height="100">
+            <img src="{{ item.produto.img_base64 }}" width="100" height="100">
           </td>
           <td>{{ item.produto.nome }}</td>
           <td>{{ item.qtde }}</td>
-          <td>{{ item.valor }}</td>
-          
-          
-          
-
+          <td>{{ item.valor|floatformat:2 }}</td>
           <td>
             <a href="{% url 'editar_item_pedido' item.id %}" class="btn btn-warning btn-sm">Editar</a>
             <a href="{% url 'remover_item_pedido' item.id %}" class="btn btn-danger btn-sm" 
-              onclick="return confirm('Tem certeza que deseja remover este item?');">Remover</a>
-
+               onclick="return confirm('Tem certeza que deseja remover este item?');">Remover</a>
           </td>
-        
       </tr>
       {% endfor %}
   </tbody>
   <tfoot>
-      
-        <tr>
-          <td colspan="3" style="text-align: right;"><strong>Total do Pedido (R$):</strong></td>
-          <td><strong>{{ pedido.total|floatformat:2 }}</strong></td>
-      </tr>
-      <tr>
-          <td colspan="3" style="text-align: right;"><strong>Total Pago (R$):</strong></td>
-          <td><strong>{{ pedido.total_pago|floatformat:2 }}</strong></td>
-      </tr>
-      <tr>
-          <td colspan="3" style="text-align: right;"><strong>Débito (R$):</strong></td>
-          <td><strong>{{ pedido.debito|floatformat:2 }}</strong></td>
-      </tr>
-      
+    <tr>
+      <td colspan="3" style="text-align: right;"><strong>Total do Pedido (R$):</strong></td>
+      <td><strong>{{ pedido.total|floatformat:2 }}</strong></td>
+    </tr>
+    <tr>
+      <td colspan="3" style="text-align: right;"><strong>Total Pago (R$):</strong></td>
+      <td><strong>{{ pedido.total_pago|floatformat:2 }}</strong></td>
+    </tr>
+    <tr>
+      <td colspan="3" style="text-align: right;"><strong>Débito (R$):</strong></td>
+      <td><strong>{{ pedido.debito|floatformat:2 }}</strong></td>
+    </tr>
   </tfoot>
 </table>
 
@@ -83,10 +76,6 @@
 
 {% block javascript %}
 <script>
-    
-
-
-
     $('#confirm-btn').confirmation({
       rootSelector: '#confirm-btn',
       title: 'Você tem certeza?',
