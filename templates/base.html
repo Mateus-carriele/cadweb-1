@@ -34,6 +34,7 @@
             <div class="container-fluid">
                 <button class="btn btn-primary" id="toggle-sidebar"><i class="fas fa-bars"></i></button>
                 <a class="navbar-brand ms-3" href="#">Dashboard</a>
+                <span class="navbar-text text-white ms-3" id="data-atual"></span> <!-- Data aqui -->
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
@@ -52,6 +53,7 @@
                 </div>
             </div>
         </nav>
+        
 
         <!-- Dashboard Content -->
         <div class="container-fluid mt-4">
@@ -105,6 +107,19 @@
     <script src="{% static 'js/funcoes.js' %}"></script>
 
     <script>
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+                    const dataElemento = document.getElementById("data-atual");
+                    const dataAtual = new Date().toLocaleDateString("pt-BR", {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    });
+                    dataElemento.textContent = dataAtual;
+                });
+
         $(document).ready(function() {
             // Aplica a função de formatação em todos os campos com a classe .money
             $('.money').mask('000.000.000.000.000,00', {reverse: true});
