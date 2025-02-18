@@ -61,4 +61,7 @@ urlpatterns = [
     path('pagamento/<int:id>/excluir/', views.excluir_pagamento, name='excluir_pagamento'),
     path('pedido/remover_item/<int:id>/', views.remover_item_pedido, name='remover_item_pedido'),
     path('pedido/pagamento/<int:id>/', views.form_pagamento, name='form_pagamento'),  # Use views.form_pagamento
+
+
+    path('pedido/nota_fiscal/<int:id>/', views.nota_fiscal, name='nota_fiscal'),
 ]

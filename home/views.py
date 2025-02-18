@@ -481,3 +481,8 @@ def remover_item_pedido(request, id):
         messages.error(request, 'Item não encontrado.')
 
     return redirect('detalhes_pedido', id=pedido.id) 
+
+def nota_fiscal(request, id):
+    print("Acessando a view nota_fiscal")  # Verifique se essa mensagem aparece no terminal
+    pedido = get_object_or_404(Pedido, id=id)
+    return render(request, 'pedido/nota_fiscal.html', {'pedido': pedido})

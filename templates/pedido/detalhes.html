@@ -23,6 +23,9 @@
     <button type="submit" class="btn btn-primary btn-sm">Salvar Produto</button>
     <button type="button" onclick="location='{% url 'form_pagamento' pedido.id %}'" class="btn btn-primary btn-sm">Registrar Pagamento</button>
     <button type="button" onclick="location='{% url 'pedido' %}'" class="btn btn-secondary btn-sm">Voltar</button>
+    <button type="button" onclick="location='{% url 'nota_fiscal' pedido.id %}'" class="btn btn-info btn-sm">
+      Gerar Nota Fiscal
+    </button>
 
 
 </form>
