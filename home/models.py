@@ -1,7 +1,9 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+import hashlib
 import locale
 import base64
-from django.core.exceptions import ValidationError
+from decimal import Decimal
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
@@ -61,7 +63,41 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido #{self.id} - {self.cliente.nome} ({self.data_pedido.strftime('%d/%m/%Y')})"
+    @property
+    def chave_acesso(self):
+        """Gera uma chave de acesso única para a nota fiscal."""
+        dados = f"{self.id}{self.data_pedido}"
+        return hashlib.sha256(dados.encode()).hexdigest()
 
+    @property
+    def icms(self):
+        """Calcula o ICMS (18% do total do pedido)."""
+        return self.total * Decimal('0.18')  # Usando Decimal para precisão
+
+    @property
+    def ipi(self):
+        """Calcula o IPI (5% do total do pedido)."""
+        return self.total * Decimal('0.05')  # Usando Decimal para precisão
+
+    @property
+    def pis(self):
+        """Calcula o PIS (1.65% do total do pedido)."""
+        return self.total * Decimal('0.0165')  # Usando Decimal
+
+    @property
+    def cofins(self):
+        """Calcula o COFINS (7.6% do total do pedido)."""
+        return self.total * Decimal('0.076')  # Usando Decimal
+
+    @property
+    def total_impostos(self):
+        """Retorna o total de impostos."""
+        return self.icms + self.ipi + self.pis + self.cofins
+
+    @property
+    def valor_final(self):
+        """Retorna o valor final do pedido (total + impostos)."""
+        return self.total + self.total_impostos
     @property
     def pagamentos(self):
         """Retorna todos os pagamentos associados a este pedido."""
